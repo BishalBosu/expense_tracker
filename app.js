@@ -19,7 +19,7 @@ app.use(mainRoutes)
 sequelize
 	.sync()
 	.then((result) => {
-		app / listenerCount(3006)
+		app.listen(3006)
 	})
 	.catch((err) => console.log("DbErroRRR: ", err))
 

@@ -13,5 +13,5 @@ exports.postRegUsers = (req, res, next) => {
 		.then(user =>{
             res.json(user);
         })
-		.catch(err => console.log(err))
+		.catch(err => res.json(err))
 }

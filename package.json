@@ -1,29 +1,20 @@
 {
   "name": "expense_tracker",
   "version": "1.0.0",
-  "description": "",
+  "description": "expense tracker app",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BishalBosu/expense_tracker.git"
-  },
-  "author": "bishal bosu",
+  "author": "Bishal Bosu",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/BishalBosu/expense_tracker/issues"
-  },
-  "homepage": "https://github.com/BishalBosu/expense_tracker#readme",
   "dependencies": {
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "mysql2": "^3.2.1",
     "nodemon": "^2.0.22",
-    "path": "^0.12.7",
     "sequelize": "^6.31.0"
   }
 }
