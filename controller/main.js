@@ -13,7 +13,7 @@ exports.postRegUsers = (req, res, next) => {
 		.then((user) => {
 			res.json(user)
 		})
-		.catch((err) => res.json(err))
+		.catch((err) => res.status(409).json(err))
 }
 
 exports.postLogIn = (req, res, next) => {
@@ -26,6 +26,10 @@ exports.postLogIn = (req, res, next) => {
 
 			if(password != real_password){
 				email = "password not matched";
+				obj={
+					email
+				}
+				return res.status(401).json(obj);
 			}		
 
 			obj={
@@ -38,6 +42,6 @@ exports.postLogIn = (req, res, next) => {
 			obj = {
 				email
 			}
-			return res.json(obj);
+			return res.status(404).json(obj);
 		})
 }
