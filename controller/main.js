@@ -1,6 +1,7 @@
 const User = require("../model/registerdUsers")
 const Expense = require("../model/expense")
 const bcrypt = require("bcrypt")
+const jwt = require('jsonwebtoken')
 
 exports.postRegUsers = (req, res, next) => {
 	const email = req.body.email
@@ -31,7 +32,8 @@ exports.postLogIn = (req, res, next) => {
 
 			bcrypt.compare(password, hashed_password, async (err, result) => {
 				if (err) {
-					email = "something went wrong"
+					email = "something went wrong";
+					
 					obj = {
 						email,
 					}
@@ -39,8 +41,10 @@ exports.postLogIn = (req, res, next) => {
 				}
 
 				if (result) {
+					const token = generateAcessToken(email);
 					obj = {
 						email,
+						token
 					}
 					return res.json(obj)
 				} else {
@@ -62,6 +66,10 @@ exports.postLogIn = (req, res, next) => {
 }
 
 exports.postAddItem = (req, res, next) => {
+	const token = req.body.token;
+
+	const user = jwt.verify(token, "asdf123")
+
 	const amount = req.body.amount
 	const desc = req.body.desc
 	const type = req.body.type
@@ -70,6 +78,7 @@ exports.postAddItem = (req, res, next) => {
 		amount: amount,
 		desc: desc,
 		type: type,
+		userEmail: user.userEmail
 	})
 		.then((item) => {
 			res.json(item)
@@ -78,7 +87,7 @@ exports.postAddItem = (req, res, next) => {
 }
 
 exports.getAllItems = (req, res, next) => {
-	Expense.findAll()
+	req.user.getExpenses()
 		.then((items) => res.json(items))
 		.catch((err) => console.log(err))
 }
@@ -93,3 +102,9 @@ exports.deleteItem = (req, res, next) => {
 		})
 		.catch((err) => console.log(err))
 }
+
+
+function generateAcessToken(email){
+	return jwt.sign({userEmail: email}, "asdf123");
+}
+
