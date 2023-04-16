@@ -64,9 +64,9 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 
 
 			if(JSON.parse(localStorage.getItem('premium')))
-				document.body.innerHTML += `<div>Hi! ${localStorage.getItem("name")} you are now a Premium User</div>`
+				document.getElementById("premium-show").innerHTML = `<div>Hi! ${localStorage.getItem("name")} you are now a Premium User</div>`
 			else
-				document.body.innerHTML += `<button class="btn btn-dark" type="button" onclick="buyPremium()">Buy Premium!</button>`
+				document.getElementById("premium-show").innerHTML = `<button class="btn btn-dark" type="button" onclick="buyPremium()">Buy Premium!</button>`
 
 	
 })
@@ -82,6 +82,7 @@ async function deleteItem(id) {
 
 //buy premium
 async function buyPremium() {
+	console.log("buypremium hited")
 	const token = localStorage.getItem("token")
 
 	const response = await axios.get(`${url}/buy/premium`, {
@@ -99,6 +100,10 @@ async function buyPremium() {
 			}, {headers: {"Authorization": token}})
 
 			alert("You are a Premium User Now");
+			localStorage.setItem('premium', true)
+			document.getElementById("premium-show").innerHTML = `<div>Hi! ${localStorage.getItem("name")} you are now a Premium User</div>`
+
+
 		}
 
 	};
