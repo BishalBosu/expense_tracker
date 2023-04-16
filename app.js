@@ -6,9 +6,11 @@ const bodyParser = require("body-parser")
 const sequelize = require("./util/database")
 
 const mainRoutes = require("./routers/main")
+const buyRoutes = require("./routers/buy")
 
 const User = require('./model/registerdUsers');
 const Expense = require('./model/expense')
+const Order = require('./model/order')
 
 const cors = require("cors")
 
@@ -18,10 +20,13 @@ app.use(cors())
 app.use(bodyParser.json({ extended: false }))
 
 app.use(mainRoutes)
+app.use('/buy', buyRoutes)
 
 User.hasMany(Expense)
 Expense.belongsTo(User)
 
+User.hasMany(Order)
+Order.belongsTo(User)
 
 sequelize
 	.sync()
@@ -30,3 +35,5 @@ sequelize
 	})
 	.catch((err) => console.log("DbErroRRR: ", err))
 
+
+	

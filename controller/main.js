@@ -14,6 +14,7 @@ exports.postRegUsers = (req, res, next) => {
 			email: email,
 			name: name,
 			password: hash,
+			is_premium: false
 		})
 			.then((user) => {
 				res.json(user)
@@ -25,10 +26,12 @@ exports.postRegUsers = (req, res, next) => {
 exports.postLogIn = (req, res, next) => {
 	let email = req.body.email
 	const password = req.body.password
+	
 
 	User.findByPk(email)
 		.then((user) => {
 			const hashed_password = user.password
+			const name = user.name
 
 			bcrypt.compare(password, hashed_password, async (err, result) => {
 				if (err) {
@@ -44,7 +47,8 @@ exports.postLogIn = (req, res, next) => {
 					const token = generateAcessToken(email);
 					obj = {
 						email,
-						token
+						token,
+						name
 					}
 					return res.json(obj)
 				} else {
@@ -68,7 +72,7 @@ exports.postLogIn = (req, res, next) => {
 exports.postAddItem = (req, res, next) => {
 	const token = req.body.token;
 
-	const user = jwt.verify(token, "asdf123")
+	const user = jwt.verify(token, process.env.TOKEN_PRIVATE_KEY)
 
 	const amount = req.body.amount
 	const desc = req.body.desc
@@ -105,6 +109,6 @@ exports.deleteItem = (req, res, next) => {
 
 
 function generateAcessToken(email){
-	return jwt.sign({userEmail: email}, "asdf123");
+	return jwt.sign({userEmail: email}, process.env.TOKEN_PRIVATE_KEY);
 }
 

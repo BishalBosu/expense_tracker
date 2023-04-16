@@ -1,6 +1,5 @@
 const url = "http://localhost:3006"
 
-
 //for expense.html
 async function addExpense() {
 	const amontInput = document.getElementById("amount")
@@ -20,60 +19,88 @@ async function addExpense() {
 
 	// If form input values are valid, submit form data to server
 	if (isValid) {
-		const amount = amontInput.value;
-		const desc = descInput.value;
-		const type = typeInput.value;
+		const amount = amontInput.value
+		const desc = descInput.value
+		const type = typeInput.value
 
-		const token = localStorage.getItem('token');
+		const token = localStorage.getItem("token")
 
 		obj = {
 			amount,
 			desc,
 			type,
-			token
+			token,
 		}
 
 		const itemAdded = await axios.post(`${url}/expense/add-item`, obj)
 
-		showItem(itemAdded.data);
+		showItem(itemAdded.data)
 	}
 }
 
-
-function showItem(element){
-	document.getElementById('main-container').innerHTML += `<div id = "${element.id}">${element.amount}-${element.desc}-${element.type} <button type="submit" onclick="deleteItem(${element.id})">Delete Item</button></div>`
+function showItem(element) {
+	document.getElementById(
+		"main-container"
+	).innerHTML += `<div id = "${element.id}">${element.amount}-${element.desc}-${element.type} <button type="submit" onclick="deleteItem(${element.id})">Delete Item</button></div>`
 }
 
 window.addEventListener("DOMContentLoaded", async (event) => {
-
 	const token = localStorage.getItem("token")
-	try{
-		const allItems = await axios.get(`${url}/expenses`, {headers: {"Authorization": token}})		
+	try {
+		const allItems = await axios.get(`${url}/expenses`, {
+			headers: { Authorization: token },
+		})
 
-		const items = allItems.data;
+		const items = allItems.data
 
-		items.forEach(element => {
+		items.forEach((element) => {
 			showItem(element)
-		});
-
-
-
-	}
-	catch(err){
+		})
+	} catch (err) {
 		console.log(err)
 	}
+})
 
-
-  });
-
-  async function deleteItem(id){
-	
-	try{
+async function deleteItem(id) {
+	try {
 		await axios.delete(`${url}/expense/delete/${id}`)
-		document.getElementById(id).remove();
-	}
-	catch(err){
+		document.getElementById(id).remove()
+	} catch (err) {
 		console.log(err)
 	}
+}
 
-  }
+//buy premium
+async function buyPremium() {
+	const token = localStorage.getItem("token")
+
+	const response = await axios.get(`${url}/buy/premium`, {
+		headers: { "Authorization": token },
+	})
+	console.log(response)
+	var options = {
+		"key": response.data.key_id,
+		"order_id": response.data.order.id,
+		//this handler function will handle sucess payment
+		"handler": async function (response){
+			await axios.post(`${url}/buy/updatetransactionstatus`, {
+				order_id: options.order_id,
+				payment_id: response.razorpay_payment_id
+			}, {headers: {"Authorization": token}})
+
+			alert("You are a Premium User Now");
+		}
+
+	};
+
+	const rzp1 = new Razorpay(options);
+	rzp1.open();
+	//e.preventDefault();
+
+	rzp1.on('payment.failed', function (response){
+		alert("Transaction FAILED! REPAY YOU FEES")
+		console.log(response)
+	})
+
+
+}

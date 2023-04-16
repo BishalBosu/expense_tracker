@@ -77,8 +77,16 @@ async function logInUser() {
 			const login_result = await axios.post(`${url}/user/login`, obj)
 			console.log(login_result);
 			localStorage.setItem('token', login_result.data.token)
-			alert("Log in sucessfully!")
+			localStorage.setItem('name', login_result.data.name)
+
+			alert("Log in sucessfully!")			
 			window.location.href = "expense.html"
+			if(login_result.data.is_premium)
+				document.body.innerHTML += `<button class="btn btn-dark" type="button" onclick="buyPremium()">Buy Premium!</button>`
+			else
+			document.body.innerHTML += `<div>Hi! ${login_result.data.name} you are now a Premium User</div>`
+
+
 		} catch (err) {
 			if (err.response.status == 404)
 				show("<div class='text-danger'>Email not found</div>")
