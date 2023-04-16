@@ -46,6 +46,8 @@ function showItem(element) {
 
 window.addEventListener("DOMContentLoaded", async (event) => {
 	const token = localStorage.getItem("token")
+
+	
 	try {
 		const allItems = await axios.get(`${url}/expenses`, {
 			headers: { Authorization: token },
@@ -59,6 +61,14 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 	} catch (err) {
 		console.log(err)
 	}
+
+
+			if(JSON.parse(localStorage.getItem('premium')))
+				document.body.innerHTML += `<div>Hi! ${localStorage.getItem("name")} you are now a Premium User</div>`
+			else
+				document.body.innerHTML += `<button class="btn btn-dark" type="button" onclick="buyPremium()">Buy Premium!</button>`
+
+	
 })
 
 async function deleteItem(id) {

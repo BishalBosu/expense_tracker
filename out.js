@@ -78,13 +78,12 @@ async function logInUser() {
 			console.log(login_result);
 			localStorage.setItem('token', login_result.data.token)
 			localStorage.setItem('name', login_result.data.name)
+			localStorage.setItem('premium', login_result.data.is_premium)
 
 			alert("Log in sucessfully!")			
 			window.location.href = "expense.html"
-			if(login_result.data.is_premium)
-				document.body.innerHTML += `<button class="btn btn-dark" type="button" onclick="buyPremium()">Buy Premium!</button>`
-			else
-			document.body.innerHTML += `<div>Hi! ${login_result.data.name} you are now a Premium User</div>`
+
+			
 
 
 		} catch (err) {

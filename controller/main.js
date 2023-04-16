@@ -32,6 +32,7 @@ exports.postLogIn = (req, res, next) => {
 		.then((user) => {
 			const hashed_password = user.password
 			const name = user.name
+			const is_premium = user.is_premium
 
 			bcrypt.compare(password, hashed_password, async (err, result) => {
 				if (err) {
@@ -48,7 +49,8 @@ exports.postLogIn = (req, res, next) => {
 					obj = {
 						email,
 						token,
-						name
+						name,
+						is_premium
 					}
 					return res.json(obj)
 				} else {
