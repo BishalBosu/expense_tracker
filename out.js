@@ -76,9 +76,7 @@ async function logInUser() {
 		try {
 			const login_result = await axios.post(`${url}/user/login`, obj)
 			console.log(login_result);
-			localStorage.setItem('token', login_result.data.token)
-			localStorage.setItem('name', login_result.data.name)
-			localStorage.setItem('premium', login_result.data.is_premium)
+			localStorage.setItem('token', login_result.data.token)			
 
 			alert("Log in sucessfully!")			
 			window.location.href = "expense.html"

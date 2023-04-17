@@ -45,12 +45,10 @@ exports.postLogIn = (req, res, next) => {
 				}
 
 				if (result) {
-					const token = generateAcessToken(email);
+					const token = generateAcessToken(email, name, is_premium);
 					obj = {
 						email,
-						token,
-						name,
-						is_premium
+						token						
 					}
 					return res.json(obj)
 				} else {
@@ -110,7 +108,7 @@ exports.deleteItem = (req, res, next) => {
 }
 
 
-function generateAcessToken(email){
-	return jwt.sign({userEmail: email}, process.env.TOKEN_PRIVATE_KEY);
+function generateAcessToken(email, name, is_premium){
+	return jwt.sign({userEmail: email, name: name, is_premium: is_premium}, process.env.TOKEN_PRIVATE_KEY);
 }
 

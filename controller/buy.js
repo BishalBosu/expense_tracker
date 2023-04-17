@@ -1,5 +1,8 @@
 const Razorpay = require("razorpay")
 const Order = require("../model/order")
+const User = require("../model/registerdUsers")
+const jwt = require('jsonwebtoken')
+
 
 exports.buyPremium = (req, res, next) => {
 	try {
@@ -31,19 +34,22 @@ exports.buyPremium = (req, res, next) => {
 
 exports.updateTransaction = (req, res, next) => {
 	try {
-		const { payment_id, order_id } = req.body
+		const { payment_id, order_id, name, email } = req.body
+		//console.log("uptrans contr", req.body)
 
 		Promise.all([
 			Order.findOne({ where: { orderId: order_id } }),
-			req.user.update({ is_premium: true }),
-			res
-				.status(202)
-				.json({ sucess: true, message: "Transaction Sucessfull!" }),
+			req.user.update({ is_premium: true })
+			
+			
 		])
 			.then((values) => {
 				values[0].update({ paymentId: payment_id, status: "SUCESSFUL" })
+				return res
+				.status(202)
+				.json({ sucess: true, message: "Transaction Sucessfull!", token: generateAcessToken(email, name, true) })
 
-				return values[2]
+				
 			})
 			.catch((err) => {
 				throw new Error(err)
@@ -78,4 +84,8 @@ exports.updateTransaction = (req, res, next) => {
 			.status(403)
 			.json({ message: "Something broken in updateTransaction", error: err })
 	}
+}
+
+function generateAcessToken(email, name, is_premium){
+	return jwt.sign({userEmail: email, name: name, is_premium: is_premium}, process.env.TOKEN_PRIVATE_KEY);
 }

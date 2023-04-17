@@ -47,7 +47,6 @@ function showItem(element) {
 window.addEventListener("DOMContentLoaded", async (event) => {
 	const token = localStorage.getItem("token")
 
-	
 	try {
 		const allItems = await axios.get(`${url}/expenses`, {
 			headers: { Authorization: token },
@@ -62,14 +61,34 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 		console.log(err)
 	}
 
+	const decodedToken = parseJwt(token)
+	//console.log(decodedToken);
 
-			if(JSON.parse(localStorage.getItem('premium')))
-				document.getElementById("premium-show").innerHTML = `<div>Hi! ${localStorage.getItem("name")} you are now a Premium User</div>`
-			else
-				document.getElementById("premium-show").innerHTML = `<button class="btn btn-dark" type="button" onclick="buyPremium()">Buy Premium!</button>`
-
-	
+	if (decodedToken.is_premium)
+		document.getElementById(
+			"premium-show"
+		).innerHTML = `<div>Hi! ${decodedToken.name} you are now a Premium User</div>`
+	else
+		document.getElementById(
+			"premium-show"
+		).innerHTML = `<button class="btn btn-dark" type="button" onclick="buyPremium()">Buy Premium!</button>`
 })
+//front end jwt parser
+function parseJwt(token) {
+	var base64Url = token.split(".")[1]
+	var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/")
+	var jsonPayload = decodeURIComponent(
+		window
+			.atob(base64)
+			.split("")
+			.map(function (c) {
+				return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
+			})
+			.join("")
+	)
+
+	return JSON.parse(jsonPayload)
+}
 
 async function deleteItem(id) {
 	try {
@@ -86,36 +105,40 @@ async function buyPremium() {
 	const token = localStorage.getItem("token")
 
 	const response = await axios.get(`${url}/buy/premium`, {
-		headers: { "Authorization": token },
+		headers: { Authorization: token },
 	})
 	console.log(response)
 	var options = {
-		"key": response.data.key_id,
-		"order_id": response.data.order.id,
+		key: response.data.key_id,
+		order_id: response.data.order.id,
 		//this handler function will handle sucess payment
-		"handler": async function (response){
-			await axios.post(`${url}/buy/updatetransactionstatus`, {
-				order_id: options.order_id,
-				payment_id: response.razorpay_payment_id
-			}, {headers: {"Authorization": token}})
+		handler: async function (response) {
+			const res = await axios.post(
+				`${url}/buy/updatetransactionstatus`,
+				{
+					order_id: options.order_id,
+					payment_id: response.razorpay_payment_id,
+					name: parseJwt(token).name,
+					email: parseJwt(token).userEmail
+				},
+				{ headers: { Authorization: token } }
+			)
+			console.log("ress from handler",res)
 
-			alert("You are a Premium User Now");
-			localStorage.setItem('premium', true)
+			localStorage.setItem('token', res.data.token);
+
+			alert("You are a Premium User Now")		
+
 			document.getElementById("premium-show").innerHTML = `<div>Hi! ${localStorage.getItem("name")} you are now a Premium User</div>`
+		},
+	}
 
-
-		}
-
-	};
-
-	const rzp1 = new Razorpay(options);
-	rzp1.open();
+	const rzp1 = new Razorpay(options)
+	rzp1.open()
 	//e.preventDefault();
 
-	rzp1.on('payment.failed', function (response){
+	rzp1.on("payment.failed", function (response) {
 		alert("Transaction FAILED! REPAY YOU FEES")
 		console.log(response)
 	})
-
-
 }

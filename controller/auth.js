@@ -10,6 +10,7 @@ exports.authenticate = (req, res, next) => {
 		User.findByPk(user.userEmail)
 			.then((userInstance) => {
 				req.user = userInstance;
+				//console.log(userInstance)
                 next();
 			})
 			.catch((err) => {throw new Error(err)})
