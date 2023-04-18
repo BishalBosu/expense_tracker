@@ -35,6 +35,7 @@ async function addExpense() {
 		const itemAdded = await axios.post(`${url}/expense/add-item`, obj)
 
 		showItem(itemAdded.data)
+		show_LeaderBoard()
 	}
 }
 
@@ -64,11 +65,12 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 	const decodedToken = parseJwt(token)
 	//console.log(decodedToken);
 
-	if (decodedToken.is_premium)
+	if (decodedToken.is_premium) {
 		document.getElementById(
 			"premium-show"
-		).innerHTML = `<div>Hi! ${decodedToken.name} you are now a Premium User</div>`
-	else
+		).innerHTML = `<div><h5>Hi! ${decodedToken.name} you are now a Premium User</h5></div>`
+		show_LeaderBoard()
+	} else
 		document.getElementById(
 			"premium-show"
 		).innerHTML = `<button class="btn btn-dark" type="button" onclick="buyPremium()">Buy Premium!</button>`
@@ -93,7 +95,11 @@ function parseJwt(token) {
 async function deleteItem(id) {
 	try {
 		await axios.delete(`${url}/expense/delete/${id}`)
+		
 		document.getElementById(id).remove()
+		setTimeout(show_LeaderBoard, 100);
+		
+		
 	} catch (err) {
 		console.log(err)
 	}
@@ -119,17 +125,23 @@ async function buyPremium() {
 					order_id: options.order_id,
 					payment_id: response.razorpay_payment_id,
 					name: parseJwt(token).name,
-					email: parseJwt(token).userEmail
+					email: parseJwt(token).userEmail,
 				},
 				{ headers: { Authorization: token } }
 			)
-			console.log("ress from handler",res)
+			console.log("ress from handler", res)
 
-			localStorage.setItem('token', res.data.token);
+			localStorage.setItem("token", res.data.token)
 
-			alert("You are a Premium User Now")		
+			alert("You are a Premium User Now")
 
-			document.getElementById("premium-show").innerHTML = `<div>Hi! ${localStorage.getItem("name")} you are now a Premium User</div>`
+			document.getElementById(
+				"premium-show"
+			).innerHTML = `<div><h5>Hi! ${localStorage.getItem(
+				"name"
+			)} you are now a Premium User</h5></div>`
+
+			show_LeaderBoard()
 		},
 	}
 
@@ -141,4 +153,31 @@ async function buyPremium() {
 		alert("Transaction FAILED! REPAY YOU FEES")
 		console.log(response)
 	})
+}
+
+//PREMIUM ONLY show leader board
+async function show_LeaderBoard() {
+	const token = localStorage.getItem("token")
+	const decodedToken = parseJwt(token)
+
+	if (decodedToken.is_premium) {
+		document.getElementById("leader-board").innerHTML =
+			"<div><br><hr>(PREMIUM feature)<h2>-----Leader Board-----</h2></div>"
+
+		try {
+			const user_data = await axios.get(`${url}/premium/getleaderboard`, {
+				headers: { Authorization: token },
+			})
+			//console.log("leadBoardUserData: ", user_data.data);
+			let i = 1
+			user_data.data.forEach((element) => {
+				document.getElementById(
+					"leader-board"
+				).innerHTML += `<div>#${i}: ${element.name} has Total Spent of: ${element.totalAmount}</div>`
+				i += 1
+			})
+		} catch (err) {
+			console.log("Show leader board error: ", err)
+		}
+	}
 }

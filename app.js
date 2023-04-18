@@ -7,6 +7,7 @@ const sequelize = require("./util/database")
 
 const mainRoutes = require("./routers/main")
 const buyRoutes = require("./routers/buy")
+const premiumRoutes = require("./routers/premium")
 
 const User = require('./model/registerdUsers');
 const Expense = require('./model/expense')
@@ -21,6 +22,7 @@ app.use(bodyParser.json({ extended: false }))
 
 app.use(mainRoutes)
 app.use('/buy', buyRoutes)
+app.use(premiumRoutes)
 
 User.hasMany(Expense)
 Expense.belongsTo(User)
