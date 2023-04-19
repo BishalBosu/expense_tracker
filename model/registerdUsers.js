@@ -20,6 +20,8 @@ const User = sequelize.define("user", {
 		allowNull: false,
 	},
 
+	totalAmount: Sequelize.INTEGER,	
+
 	is_premium: Sequelize.BOOLEAN
 });
 

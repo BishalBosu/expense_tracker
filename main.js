@@ -8,13 +8,13 @@ async function addExpense() {
 
 	let isValid = true
 	if (!amontInput.checkValidity()) {
-		isValid = false
+		isValid = false;
 	}
 	if (!descInput.checkValidity()) {
-		isValid = false
+		isValid = false;
 	}
 	if (!typeInput.checkValidity()) {
-		isValid = false
+		isValid = false;
 	}
 
 	// If form input values are valid, submit form data to server
@@ -35,7 +35,7 @@ async function addExpense() {
 		const itemAdded = await axios.post(`${url}/expense/add-item`, obj)
 
 		showItem(itemAdded.data)
-		show_LeaderBoard()
+		setTimeout(show_LeaderBoard, 100);
 	}
 }
 
@@ -94,9 +94,9 @@ function parseJwt(token) {
 
 async function deleteItem(id) {
 	try {
-		await axios.delete(`${url}/expense/delete/${id}`)
+		await axios.delete(`${url}/expense/delete/${id}`);
 		
-		document.getElementById(id).remove()
+		document.getElementById(id).remove();
 		setTimeout(show_LeaderBoard, 100);
 		
 		
@@ -141,7 +141,7 @@ async function buyPremium() {
 				"name"
 			)} you are now a Premium User</h5></div>`
 
-			show_LeaderBoard()
+			setTimeout(show_LeaderBoard, 100);
 		},
 	}
 

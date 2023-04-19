@@ -1,7 +1,7 @@
 const User = require("../model/registerdUsers")
 const Expense = require("../model/expense")
 const bcrypt = require("bcrypt")
-const jwt = require('jsonwebtoken')
+const jwt = require("jsonwebtoken")
 
 exports.postRegUsers = (req, res, next) => {
 	const email = req.body.email
@@ -14,7 +14,8 @@ exports.postRegUsers = (req, res, next) => {
 			email: email,
 			name: name,
 			password: hash,
-			is_premium: false
+			is_premium: false,
+			totalAmount: 0,
 		})
 			.then((user) => {
 				res.json(user)
@@ -26,7 +27,6 @@ exports.postRegUsers = (req, res, next) => {
 exports.postLogIn = (req, res, next) => {
 	let email = req.body.email
 	const password = req.body.password
-	
 
 	User.findByPk(email)
 		.then((user) => {
@@ -36,8 +36,8 @@ exports.postLogIn = (req, res, next) => {
 
 			bcrypt.compare(password, hashed_password, async (err, result) => {
 				if (err) {
-					email = "something went wrong";
-					
+					email = "something went wrong"
+
 					obj = {
 						email,
 					}
@@ -45,10 +45,10 @@ exports.postLogIn = (req, res, next) => {
 				}
 
 				if (result) {
-					const token = generateAcessToken(email, name, is_premium);
+					const token = generateAcessToken(email, name, is_premium)
 					obj = {
 						email,
-						token						
+						token,
 					}
 					return res.json(obj)
 				} else {
@@ -68,9 +68,9 @@ exports.postLogIn = (req, res, next) => {
 			return res.status(404).json(obj)
 		})
 }
-
+//adding expenses
 exports.postAddItem = (req, res, next) => {
-	const token = req.body.token;
+	const token = req.body.token
 
 	const user = jwt.verify(token, process.env.TOKEN_PRIVATE_KEY)
 
@@ -82,16 +82,24 @@ exports.postAddItem = (req, res, next) => {
 		amount: amount,
 		desc: desc,
 		type: type,
-		userEmail: user.userEmail
+		userEmail: user.userEmail,
 	})
 		.then((item) => {
 			res.json(item)
 		})
 		.catch((err) => console.log(err))
+
+	User.findByPk(user.userEmail)
+		.then((user) => {
+			const newAmount = user.totalAmount + +amount
+			user.update({ totalAmount: newAmount })
+		})
+		.catch((err) => console.log(err))
 }
 
 exports.getAllItems = (req, res, next) => {
-	req.user.getExpenses()
+	req.user
+		.getExpenses()
 		.then((items) => res.json(items))
 		.catch((err) => console.log(err))
 }
@@ -100,15 +108,24 @@ exports.deleteItem = (req, res, next) => {
 	id = req.params.itemId
 
 	Expense.findByPk(id)
-		.then(item =>{
-			item.destroy();
+		.then((item) => {
+			User.findByPk(item.userEmail)
+				.then((user) => {
+					const newAmount = user.totalAmount - +item.amount;
+
+					user.update({ totalAmount: newAmount})
+				})
+				.catch((err) => console.log(err))
+
+			item.destroy()
 			return res.json({})
 		})
 		.catch((err) => console.log(err))
 }
 
-
-function generateAcessToken(email, name, is_premium){
-	return jwt.sign({userEmail: email, name: name, is_premium: is_premium}, process.env.TOKEN_PRIVATE_KEY);
+function generateAcessToken(email, name, is_premium) {
+	return jwt.sign(
+		{ userEmail: email, name: name, is_premium: is_premium },
+		process.env.TOKEN_PRIVATE_KEY
+	)
 }
-
