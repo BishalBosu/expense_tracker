@@ -4,6 +4,8 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const sequelize = require("../util/database")
 
+
+
 exports.postRegUsers = async (req, res, next) => {
 	//transaction constant
 	const t = await sequelize.transaction()
@@ -118,7 +120,7 @@ exports.postAddItem = async (req, res, next) => {
 
 exports.getAllItems = async (req, res, next) => {
 	try {
-		const items = await req.user.getExpenses();
+		const items = await req.user.getExpenses()
 		res.json(items)
 	} catch (err) {
 		console.log(err)
@@ -148,6 +150,8 @@ exports.deleteItem = async (req, res, next) => {
 		console.log("LOWWWDLETE", err)
 	}
 }
+
+
 
 function generateAcessToken(email, name, is_premium) {
 	return jwt.sign(
