@@ -76,9 +76,12 @@ async function logInUser() {
 		try {
 			const login_result = await axios.post(`${url}/user/login`, obj)
 			console.log(login_result);
-			localStorage.setItem('token', login_result.data.token)			
+			localStorage.setItem('token', login_result.data.token)		
+			const decodedToken = parseJwt(login_result.data.token);
+			localStorage.setItem('name',decodedToken.name);		
+			
 
-			alert("Log in sucessfully!")			
+			alert("Log in sucessfully!")	
 			window.location.href = "expense.html"
 
 			
@@ -94,4 +97,21 @@ async function logInUser() {
 
 function show(element) {
 	document.getElementById("main-container").innerHTML += element
+}
+
+//front end jwt parser
+function parseJwt(token) {
+	var base64Url = token.split(".")[1]
+	var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/")
+	var jsonPayload = decodeURIComponent(
+		window
+			.atob(base64)
+			.split("")
+			.map(function (c) {
+				return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2)
+			})
+			.join("")
+	)
+
+	return JSON.parse(jsonPayload)
 }

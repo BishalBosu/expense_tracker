@@ -2,26 +2,37 @@ const User = require("../model/registerdUsers")
 const Expense = require("../model/expense")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
+const sequelize = require("../util/database")
 
-exports.postRegUsers = (req, res, next) => {
+exports.postRegUsers = async (req, res, next) => {
+	//transaction constant
+	const t = await sequelize.transaction()
 	const email = req.body.email
 	const name = req.body.name
 	const password = req.body.password
 
-	bcrypt.hash(password, 10, async (err, hash) => {
-		if (err) console.log(err)
-		await User.create({
-			email: email,
-			name: name,
-			password: hash,
-			is_premium: false,
-			totalAmount: 0,
+	try {
+		bcrypt.hash(password, 10, async (err, hash) => {
+			if (err) console.log(err)
+			const user = await User.create(
+				{
+					email: email,
+					name: name,
+					password: hash,
+					is_premium: false,
+					totalAmount: 0,
+				},
+				{ transaction: t }
+			)
+
+			await t.commit()
+			res.json(user)
 		})
-			.then((user) => {
-				res.json(user)
-			})
-			.catch((err) => res.status(409).json(err))
-	})
+	} catch (err) {
+		await t.rollback()
+		//indicating conflict by 409
+		res.status(409).json(err)
+	}
 }
 
 exports.postLogIn = (req, res, next) => {
@@ -69,7 +80,10 @@ exports.postLogIn = (req, res, next) => {
 		})
 }
 //adding expenses
-exports.postAddItem = (req, res, next) => {
+exports.postAddItem = async (req, res, next) => {
+	//transaction constant
+	const t = await sequelize.transaction()
+
 	const token = req.body.token
 
 	const user = jwt.verify(token, process.env.TOKEN_PRIVATE_KEY)
@@ -78,49 +92,61 @@ exports.postAddItem = (req, res, next) => {
 	const desc = req.body.desc
 	const type = req.body.type
 
-	Expense.create({
-		amount: amount,
-		desc: desc,
-		type: type,
-		userEmail: user.userEmail,
-	})
-		.then((item) => {
-			res.json(item)
-		})
-		.catch((err) => console.log(err))
+	try {
+		const item = await Expense.create(
+			{
+				amount: amount,
+				desc: desc,
+				type: type,
+				userEmail: user.userEmail,
+			},
+			{ transaction: t }
+		)
 
-	User.findByPk(user.userEmail)
-		.then((user) => {
-			const newAmount = user.totalAmount + +amount
-			user.update({ totalAmount: newAmount })
-		})
-		.catch((err) => console.log(err))
+		res.json(item)
+
+		const user1 = await User.findByPk(user.userEmail)
+
+		const newAmount = user1.totalAmount + +amount
+		await user1.update({ totalAmount: newAmount }, { transaction: t })
+		await t.commit()
+	} catch (err) {
+		await t.rollback()
+		console.log(err)
+	}
 }
 
-exports.getAllItems = (req, res, next) => {
-	req.user
-		.getExpenses()
-		.then((items) => res.json(items))
-		.catch((err) => console.log(err))
+exports.getAllItems = async (req, res, next) => {
+	try {
+		const items = await req.user.getExpenses();
+		res.json(items)
+	} catch (err) {
+		console.log(err)
+	}
 }
 
-exports.deleteItem = (req, res, next) => {
+exports.deleteItem = async (req, res, next) => {
+	//transaction constant
+	const t = await sequelize.transaction()
+
 	id = req.params.itemId
 
-	Expense.findByPk(id)
-		.then((item) => {
-			User.findByPk(item.userEmail)
-				.then((user) => {
-					const newAmount = user.totalAmount - +item.amount;
+	try {
+		const item = await Expense.findByPk(id)
 
-					user.update({ totalAmount: newAmount})
-				})
-				.catch((err) => console.log(err))
+		const user = await User.findByPk(item.userEmail)
 
-			item.destroy()
-			return res.json({})
-		})
-		.catch((err) => console.log(err))
+		//transaction constant
+		const t = await sequelize.transaction()
+		const newAmount = user.totalAmount - +item.amount
+		await user.update({ totalAmount: newAmount }, { transaction: t })
+		item.destroy()
+		await t.commit()
+		return res.json({})
+	} catch (err) {
+		await t.rollback()
+		console.log("LOWWWDLETE", err)
+	}
 }
 
 function generateAcessToken(email, name, is_premium) {

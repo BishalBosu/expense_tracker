@@ -35,7 +35,7 @@ async function addExpense() {
 		const itemAdded = await axios.post(`${url}/expense/add-item`, obj)
 
 		showItem(itemAdded.data)
-		setTimeout(show_LeaderBoard, 100);
+		setTimeout(show_LeaderBoard, 3000);
 	}
 }
 
@@ -97,7 +97,7 @@ async function deleteItem(id) {
 		await axios.delete(`${url}/expense/delete/${id}`);
 		
 		document.getElementById(id).remove();
-		setTimeout(show_LeaderBoard, 100);
+		setTimeout(show_LeaderBoard, 3000);
 		
 		
 	} catch (err) {
@@ -141,7 +141,7 @@ async function buyPremium() {
 				"name"
 			)} you are now a Premium User</h5></div>`
 
-			setTimeout(show_LeaderBoard, 100);
+			setTimeout(show_LeaderBoard, 3000);
 		},
 	}
 
