@@ -1,20 +1,20 @@
-const url = "http://localhost:3006";
+const url = "http://localhost:3006"
 
 //for expense.html
 async function addExpense() {
-	const amontInput = document.getElementById("amount")
-	const descInput = document.getElementById("desc")
-	const typeInput = document.getElementById("type")
+	const amontInput = document.getElementById("amount");
+	const descInput = document.getElementById("desc");
+	const typeInput = document.getElementById("type");
 
 	let isValid = true
 	if (!amontInput.checkValidity()) {
-		isValid = false;
+		isValid = false
 	}
 	if (!descInput.checkValidity()) {
-		isValid = false;
+		isValid = false
 	}
 	if (!typeInput.checkValidity()) {
-		isValid = false;
+		isValid = false
 	}
 
 	// If form input values are valid, submit form data to server
@@ -34,8 +34,8 @@ async function addExpense() {
 
 		const itemAdded = await axios.post(`${url}/expense/add-item`, obj)
 
-		showItem(itemAdded.data);
-		setTimeout(show_LeaderBoard, 3000);
+		showItem(itemAdded.data)
+		setTimeout(show_LeaderBoard, 3000)
 	}
 }
 
@@ -70,6 +70,8 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 			"premium-show"
 		).innerHTML = `<div><h5>Hi! ${decodedToken.name} you are now a Premium User</h5></div>`
 		show_LeaderBoard()
+		document.getElementById("report").innerHTML =
+			'<div class="row"><button type="button" class="col-2 btn btn-primary" onclick="showDailyReport">Daily Report</button><button type="button" class="col-2 btn btn-primary" onclick="showWeeklyReport">Weekly Report</button><button type="button" class="col-2 btn btn-primary" onclick="showMonthlyReport">Monthly Report</button></div><div id="report-content"></div>'
 	} else
 		document.getElementById(
 			"premium-show"
@@ -94,12 +96,10 @@ function parseJwt(token) {
 
 async function deleteItem(id) {
 	try {
-		await axios.delete(`${url}/expense/delete/${id}`);
-		
-		document.getElementById(id).remove();
-		setTimeout(show_LeaderBoard, 3000);
-		
-		
+		await axios.delete(`${url}/expense/delete/${id}`)
+
+		document.getElementById(id).remove()
+		setTimeout(show_LeaderBoard, 3000)
 	} catch (err) {
 		console.log(err)
 	}
@@ -140,8 +140,10 @@ async function buyPremium() {
 			).innerHTML = `<div><h5>Hi! ${localStorage.getItem(
 				"name"
 			)} you are now a Premium User</h5></div>`
-
-			setTimeout(show_LeaderBoard, 3000);
+			document.getElementById("report").innerHTML =
+			'<div class="row"><button type="button" class="col-2 btn btn-primary" onclick="showDailyReport">Daily Report</button><button type="button" class="col-2 btn btn-primary" onclick="showWeeklyReport">Weekly Report</button><button type="button" class="col-2 btn btn-primary" onclick="showMonthlyReport">Monthly Report</button></div><div id="report-content"></div>'
+	
+			setTimeout(show_LeaderBoard, 3000)
 		},
 	}
 
@@ -180,4 +182,16 @@ async function show_LeaderBoard() {
 			console.log("Show leader board error: ", err)
 		}
 	}
+}
+
+//PREMIUM only show report:
+async function showDailyreport() {
+	document.getElementById("report").innerHTML += ""
+}
+
+async function showWeeklyreport() {
+	document.getElementById("report").innerHTML += ""
+}
+async function showMonthlyreport() {
+	document.getElementById("report").innerHTML += ""
 }
