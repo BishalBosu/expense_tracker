@@ -14,8 +14,6 @@ router.get('/expenses', authController.authenticate , mainController.getAllItems
 
 router.delete("/expense/delete/:itemId", mainController.deleteItem)
 
-router.post("/password/forgotpassword", mainController.postResetPass)
-
 //router.get()
 
 module.exports = router;

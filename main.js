@@ -1,4 +1,4 @@
-const url = "http://localhost:3006"
+const url = "http://localhost:3006";
 
 //for expense.html
 async function addExpense() {
@@ -34,7 +34,7 @@ async function addExpense() {
 
 		const itemAdded = await axios.post(`${url}/expense/add-item`, obj)
 
-		showItem(itemAdded.data)
+		showItem(itemAdded.data);
 		setTimeout(show_LeaderBoard, 3000);
 	}
 }
