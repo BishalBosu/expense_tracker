@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css"
+			rel="stylesheet" />
+		<link
+			href="https://getbootstrap.com/docs/5.3/assets/css/docs.css"
+			rel="stylesheet" />
+		<title>Forget password</title>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script>
+
+            async function sendResetPassReq(){
+               const newpass = document.getElementById("newpass").value;
+               const confirmpass = document.getElementById("confirmpass").value;
+               
+               if(newpass == confirmpass){
+                    try
+                    { 
+                        await axios.post("http://localhost/password/updatepassword", {password: newpass})
+                        alert("Password updated sucessfully");
+                        window.location.href = "login.html"
+                    }catch(err){
+                        alert("password cant be changed with this link any more.")
+                    }
+               }
+
+
+                
+            }
+        </script>
+        
+		
+	</head>
+	<body class="p-3 m-0 border-0 bd-example">
+        <div class="row">
+            <div class="col-sm-4">             
+               
+                <label>New Password</label>
+                <div class="form-group pass_show"> 
+                    <input id="newpass" type="password" class="form-control" placeholder="New Password"> 
+                </div> 
+                   <label>Confirm Password</label>
+                <div class="form-group pass_show"> 
+                    <input id="confirmpass"type="password" class="form-control" placeholder="Confirm Password"> 
+                </div> 
+                <br>
+                <button type="button" class="btn btn-success" onsubmit="sendResetPassReq()">Update Password</button>
+            </div>  
+        </div>
+
+
+    </body>
+    </html>
