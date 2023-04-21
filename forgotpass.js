@@ -9,5 +9,7 @@ async function forgotPassword(){
 
     const response = await axios.post(`${url}/password/forgotpassword`, obj);
 
+    alert("check your inbox We have sent a one time link to reset!")
+
 
 }

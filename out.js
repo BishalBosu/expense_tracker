@@ -1,4 +1,5 @@
 const url = "http://localhost:3006"
+console.log("out fired");
 
 async function registerUser() {
 	// Get form input values
@@ -48,6 +49,7 @@ async function registerUser() {
 
 //for login.html
 async function logInUser() {
+	console.log("login method fired");
 	// Get form input values
 	const emailInput = document.getElementById("CustomEmail")
 	const passwordInput = document.getElementById("CustomPassword")
