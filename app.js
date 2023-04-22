@@ -13,6 +13,9 @@ const fogotpassRoutes = require("./routers/forgotpass")
 const User = require('./model/registerdUsers');
 const Expense = require('./model/expense')
 const Order = require('./model/order')
+const ForgotPassReq = require('./model/forgot_pass_req')
+const DowUrl = require('./model/downloadurl')
+
 
 const cors = require("cors")
 
@@ -31,6 +34,12 @@ Expense.belongsTo(User)
 
 User.hasMany(Order)
 Order.belongsTo(User)
+
+User.hasMany(ForgotPassReq)
+ForgotPassReq.belongsTo(User)
+
+User.hasMany(DowUrl);
+DowUrl.belongsTo(User)
 
 sequelize
 	.sync()

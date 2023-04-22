@@ -2,9 +2,9 @@ const url = "http://localhost:3006"
 
 //for expense.html
 async function addExpense() {
-	const amontInput = document.getElementById("amount");
-	const descInput = document.getElementById("desc");
-	const typeInput = document.getElementById("type");
+	const amontInput = document.getElementById("amount")
+	const descInput = document.getElementById("desc")
+	const typeInput = document.getElementById("type")
 
 	let isValid = true
 	if (!amontInput.checkValidity()) {
@@ -71,7 +71,10 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 		).innerHTML = `<div><h5>Hi! ${decodedToken.name} you are now a Premium User</h5></div>`
 		show_LeaderBoard()
 		document.getElementById("report").innerHTML =
-			'<div class="row"><button type="button" class="col-2 btn btn-primary" onclick="showDailyReport">Daily Report</button><button type="button" class="col-2 btn btn-primary" onclick="showWeeklyReport">Weekly Report</button><button type="button" class="col-2 btn btn-primary" onclick="showMonthlyReport">Monthly Report</button></div><div id="report-content"></div>'
+			'<div><br><hr>(PREMIUM feature)<h2>-----Report-----</h2></div><div class="row btn-group" role="group" aria-label="Basic mixed styles example"><button type="button" class="col-2 btn btn-primary" onclick="showDailyReport">Daily Report</button><button type="button" class="col-2 btn btn-primary" onclick="showWeeklyReport">Weekly Report</button><button type="button" class="col-2 btn btn-primary" onclick="showMonthlyReport">Monthly Report</button></div><div id="report-content"></div>'
+		document.getElementById(
+			"download-report"
+		).innerHTML = `<div><br><hr>(PREMIUM feature)<h2></h2></div><button class="btn btn-primary" onclick="dowloadReport()">Download report</button>`
 	} else
 		document.getElementById(
 			"premium-show"
@@ -141,8 +144,10 @@ async function buyPremium() {
 				"name"
 			)} you are now a Premium User</h5></div>`
 			document.getElementById("report").innerHTML =
-			'<div class="row"><button type="button" class="col-2 btn btn-primary" onclick="showDailyReport">Daily Report</button><button type="button" class="col-2 btn btn-primary" onclick="showWeeklyReport">Weekly Report</button><button type="button" class="col-2 btn btn-primary" onclick="showMonthlyReport">Monthly Report</button></div><div id="report-content"></div>'
-	
+				'<div><br><hr>(PREMIUM feature)<h2>-----Report-----</h2></div><div class="row btn-group" role="group" aria-label="Basic mixed styles example"><button type="button" class="col-2 btn btn-primary" onclick="showDailyReport">Daily Report</button><button type="button" class="col-2 btn btn-primary" onclick="showWeeklyReport">Weekly Report</button><button type="button" class="col-2 btn btn-primary" onclick="showMonthlyReport">Monthly Report</button></div><div id="report-content"></div>'
+			document.getElementById(
+				"download-report"
+			).innerHTML = `<div><br><hr>(PREMIUM feature)<h2></h2></div><<button class="btn btn-primary" onclick="dowloadReport()">Download report</button>`
 			setTimeout(show_LeaderBoard, 3000)
 		},
 	}
@@ -184,7 +189,25 @@ async function show_LeaderBoard() {
 	}
 }
 
-//PREMIUM only show report:
+//PREMIUM only download and show report:
+
+async function dowloadReport() {
+	try {
+		const token = localStorage.getItem("token")
+
+		const response = await axios.get(`${url}/premium/downloadreport`, {
+			headers: { Authorization: token },
+		})
+
+		const a = document.createElement("a");
+		a.href = response.data.fileUrl;
+		a.download = 'myexpense.csv';
+		a.click();
+	} catch (err) {
+		console.log(err, "error in download report.")
+	}
+}
+
 async function showDailyreport() {
 	document.getElementById("report").innerHTML += ""
 }
