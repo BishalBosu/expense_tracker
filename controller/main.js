@@ -4,8 +4,6 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 const sequelize = require("../util/database")
 
-
-
 exports.postRegUsers = async (req, res, next) => {
 	//transaction constant
 	const t = await sequelize.transaction()
@@ -114,6 +112,13 @@ exports.postAddItem = async (req, res, next) => {
 		await t.commit()
 	} catch (err) {
 		await t.rollback()
+		res
+			.status(422)
+			.json({
+				message:
+					"Input length is not valid or some other internal error at adding expense",
+				success: flase,
+			})
 		console.log(err)
 	}
 }
@@ -151,11 +156,43 @@ exports.deleteItem = async (req, res, next) => {
 	}
 }
 
-
-
 function generateAcessToken(email, name, is_premium) {
 	return jwt.sign(
 		{ userEmail: email, name: name, is_premium: is_premium },
 		process.env.TOKEN_PRIVATE_KEY
 	)
+}
+
+exports.getexpenselength = async (req, res, next) => {
+	try {
+		const userEmail = req.user.email
+		const length = await sequelize.query(
+			`SELECT COUNT(id) AS length FROM expenses WHERE userEmail = "${userEmail}"`
+		)
+		res.json(length[0][0])
+	} catch (err) {
+		console.log(err);
+
+	}
+}
+
+exports.getPageDataOnly = async (req, res, next) => {
+	const pageno = req.query.pageno
+	const pagelen = req.query.pagelen
+	try {
+		const items = await req.user.getExpenses()
+		
+
+		const start_index = ((pageno - 1) * pagelen);
+
+		const item_sliced = items.slice(start_index, start_index + 3)
+
+		console.log(item_sliced, pagelen);
+		// let i = 1;
+
+		res.json(item_sliced);
+
+	} catch (err) {
+		console.log(err);
+	}
 }

@@ -14,6 +14,8 @@ router.get('/expenses', authController.authenticate , mainController.getAllItems
 
 router.delete("/expense/delete/:itemId", mainController.deleteItem)
 
-//router.get()
+router.get("/expenseslength", authController.authenticate, mainController.getexpenselength)
+
+router.get("/expensespage", authController.authenticate, mainController.getPageDataOnly)
 
 module.exports = router;
