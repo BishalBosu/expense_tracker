@@ -41,7 +41,7 @@ async function addExpense() {
 
 function showItem(element) {
 	document.getElementById(
-		"expenses-contsiner"
+		"expenses-container"
 	).innerHTML += `<div id = "${element.id}">${element.amount}-${element.desc}-${element.type} <button type="submit" class="btn btn-danger btn-sm" onclick="deleteItem(${element.id})">Delete Item</button></div><hr>`
 }
 
@@ -50,6 +50,11 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 	window.location.href = "login.html"
 	}
 	
+	document.getElementById("selectLen").addEventListener("input", setPageLen);
+
+	
+	
+
 	let prev = 0;
 	let next = 4;
 
@@ -68,7 +73,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 	const one_li = document.getElementById("one-li");
 	one_li.addEventListener("click", async (event1) =>{
 		const integer_oneli_value = one_li.innerText * 1;
-		getFor(integer_oneli_value);
+		getFor(integer_oneli_value, pageLen);
 	})
 
 	const two_li = document.getElementById("two-li");

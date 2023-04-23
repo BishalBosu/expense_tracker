@@ -185,9 +185,9 @@ exports.getPageDataOnly = async (req, res, next) => {
 
 		const start_index = ((pageno - 1) * pagelen);
 
-		const item_sliced = items.slice(start_index, start_index + 3)
+		const item_sliced = items.slice(start_index, start_index + +pagelen)
 
-		console.log(item_sliced, pagelen);
+		//console.log(item_sliced, pagelen);
 		// let i = 1;
 
 		res.json(item_sliced);

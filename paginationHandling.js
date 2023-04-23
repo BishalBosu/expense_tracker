@@ -16,14 +16,14 @@ const getForPev = (prevPageNo, one_li, two_li, three_li) => {
 const getFor = async (pageNo) => {
 	const token = localStorage.getItem("token");
 	try {
-		const pageLength = 3;
+		const pageLength = getPageLen();
 		const allItems = await axios.get(`${url}/expensespage/?pageno=${pageNo}&pagelen=${pageLength}`, {
 			headers: { Authorization: token },
 		})
 
 		const items = allItems.data
 		document.getElementById(
-			"expenses-contsiner"
+			"expenses-container"
 		).innerHTML =`<h6>PAGENO: ${pageNo}</h6>`;
 		items.forEach((element) => {
 			showItem(element)
@@ -47,8 +47,9 @@ const getForNext = async (nextPageNo, one_li, two_li, three_li) => {
 
 		let next = nextPageNo
 		let prev = next - 4
+		const pageLength = getPageLen();
 
-		if (next < Math.floor(length / 3) + 2) {
+		if (next < Math.floor(length / pageLength) + 2) {
 			
 			next = nextPageNo + 1
 			one_li.firstChild.innerText = next - 3
@@ -61,4 +62,27 @@ const getForNext = async (nextPageNo, one_li, two_li, three_li) => {
 	} catch (err) {
 		console.log(err);
 	}
+}
+
+
+function getPageLen(){
+
+	const pageLenInput = document.getElementById("selectLen").value * 1;
+
+	if(localStorage.getItem("pageLen")){
+		return localStorage.getItem("pageLen");
+	
+	}else{
+		
+		localStorage.setItem("pageLen", 3);
+		return localStorage.getItem("pageLen");
+	}
+
+}
+
+
+function setPageLen(){
+	const pageLenInputValue = document.getElementById("selectLen").value * 1;
+	localStorage.setItem("pageLen", pageLenInputValue);
+
 }
