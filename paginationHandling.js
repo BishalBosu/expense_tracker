@@ -82,7 +82,9 @@ function getPageLen(){
 
 
 function setPageLen(){
+
 	const pageLenInputValue = document.getElementById("selectLen").value * 1;
 	localStorage.setItem("pageLen", pageLenInputValue);
+	getFor(1)
 
 }
