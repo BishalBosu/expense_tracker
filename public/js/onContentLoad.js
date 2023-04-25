@@ -26,7 +26,7 @@ window.addEventListener("DOMContentLoaded", async (event) => {
 	const one_li = document.getElementById("one-li");
 	one_li.addEventListener("click", async (event1) =>{
 		const integer_oneli_value = one_li.innerText * 1;
-		getFor(integer_oneli_value, pageLen);
+		getFor(integer_oneli_value);
 	})
 
 	const two_li = document.getElementById("two-li");
