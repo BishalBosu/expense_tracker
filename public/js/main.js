@@ -1,4 +1,4 @@
-const url = "http://localhost:3006"
+const url = "http://13.49.105.38:3006"
 
 //for expense.html
 async function addExpense() {
