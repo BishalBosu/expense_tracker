@@ -48,9 +48,9 @@ app.use('/buy', buyRoutes)
 app.use(premiumRoutes)
 app.use(fogotpassRoutes)
 
-// app.use((req, res, next)=>{
-// 	res.sendFile('/login.html');
-// })
+ app.use((req, res, next)=>{
+res.redirect('/login.html');
+ })
 
 User.hasMany(Expense)
 Expense.belongsTo(User)
