@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express")
 
 const path = require("path")
@@ -24,6 +25,8 @@ const cors = require("cors")
 
 const app = express();
 
+app.use(express.static(path.join(__dirname, "public")))
+
 const accessLogStream = fs.createWriteStream(
 	path.join(__dirname, "access.log"),
 	{flags: 'a'}
@@ -44,6 +47,10 @@ app.use(mainRoutes)
 app.use('/buy', buyRoutes)
 app.use(premiumRoutes)
 app.use(fogotpassRoutes)
+
+// app.use((req, res, next)=>{
+// 	res.sendFile('/login.html');
+// })
 
 User.hasMany(Expense)
 Expense.belongsTo(User)
