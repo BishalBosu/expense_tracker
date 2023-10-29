@@ -1,4 +1,4 @@
-const url = "http://13.49.105.38:3006"
+const url = "http://localhost:3006"
 console.log("out fired");
 
 async function registerUser() {
@@ -76,6 +76,7 @@ async function logInUser() {
 			password,
 		}
 		try {
+			
 			const login_result = await axios.post(`${url}/user/login`, obj)
 			console.log(login_result);
 			localStorage.setItem('token', login_result.data.token)		

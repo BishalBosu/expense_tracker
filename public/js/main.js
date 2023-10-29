@@ -1,4 +1,4 @@
-const url = "http://13.49.105.38:3006"
+const url = "http://localhost:3006"
 
 //for expense.html
 async function addExpense() {
@@ -135,7 +135,7 @@ async function showMonthlyreport() {
 
 
 function logOut(){
-	window.location.href = "expense.html"
+	window.location.href = "login.html"
 	localStorage.removeItem("token");
 	localStorage.removeItem("name");
 

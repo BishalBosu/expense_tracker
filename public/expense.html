@@ -18,7 +18,42 @@
 		<script src="/js/axios_min.js"></script>
 	</head>
 	<body class="p-3 m-0 border-0 bd-example">
-		<div id="premium-show"></div>
+
+		 <!-- navbar code start -->
+
+		 <nav class="navbar navbar-expand-lg bg-body-tertiary bg-dark fixed-top" data-bs-theme="dark">
+			<div class="container-fluid">
+			  <a class="navbar-brand" href="/expense.html">Expense Tracker App!</a>
+			  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			  </button>
+			  <div class="collapse navbar-collapse" id="navbarText">
+				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				  <li class="nav-item">
+					<a class="nav-link active" aria-current="page" href="#">Home</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="#">Pricing</a>
+				  </li>
+				  <li class="nav-item">
+					<a class="nav-link" href="javascript:logOut();">Log Out!</a>
+				  </li>				  
+				</ul>
+				<span id="premium-show" class="navbar-text">
+				  Non Prime user
+				</span>
+			  </div>
+			</div>
+		  </nav>
+		   <!-- navbar code end -->
+	  
+
+
+
+
+
+
+		<!-- <div id="premium-show"></div> -->
 		<div id="main-container">
 			<form class="row g-3 needs-validation was-validated" novalidate="">
 				<div class="col-md-4">
@@ -54,7 +89,7 @@
 				</div>
 
 				<div class="col-12">
-					<button class="btn btn-primary" type="button" onclick="addExpense()">
+					<button class="btn btn-dark" type="button" onclick="addExpense()">
 						Add Expense
 					</button>
 				</div>
@@ -63,7 +98,7 @@
 				</div>
 			</form>
 
-			<p>
+			<!-- <p>
 				Want to?
 				<a
 					href="javascript:logOut();"
@@ -71,7 +106,7 @@
 					class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
 					>Log Out!</a
 				>
-			</p>
+			</p> -->
 		</div>
 		<h3>Expenses: </h3>
 

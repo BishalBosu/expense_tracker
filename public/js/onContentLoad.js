@@ -1,6 +1,6 @@
 window.addEventListener("DOMContentLoaded", async (event) => {
 	if(!localStorage.getItem("token")){
-	window.location.href = "login.html"
+	 return window.location.href = "login.html"
 	}
 	
 	document.getElementById("selectLen").addEventListener("input", setPageLen);
